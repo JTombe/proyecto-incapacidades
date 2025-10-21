@@ -1,0 +1,491 @@
+======================================================
+1. DIAGRAMA DE CASOS DE USO (DCU) - MERMAID.JS
+======================================================
+
+%% Diagrama de Casos de Uso del Sistema de Gestión de Incapacidades Médicas (Grafo Único)
+graph TD
+    %% Definición de los Actores
+    actor[Colaborador/Empleado]
+    actorA[Recepcionista/Auxiliar Admvo.]
+    actorB[Auxiliar de Gestión Humana]
+    actorC[Jefe Inmediato]
+    actorD[Tesorería y Contabilidad]
+    actorE[Administrador del Sistema]
+    actorF[Jurídica]
+
+    %% Definición de los Sistemas/Entidades Externas
+    entity1[(Sistema Contable)]
+    entity2[(Portales EPS/ARL)]
+    entity3[(Correo Institucional)]
+
+    %% ----------------------------------------------------------------
+    %% Casos de Uso - I. Gestión Documental y Recepción
+    %% ----------------------------------------------------------------
+    uc1(I. Registrar Incapacidad Médica)
+    uc2(I. Cargar Documentación Soporte)
+    uc3(I. Validar Requisitos Documentales)
+    uc4(I. Recibir Incapacidad Vía Correo Electrónico)
+    uc5(I. Archivar Documento Digitalmente)
+    uc6(I. Gestionar Archivo Físico)
+
+    %% ----------------------------------------------------------------
+    %% Casos de Uso - II. Trazabilidad y Cumplimiento Normativo
+    %% ----------------------------------------------------------------
+    uc7(II. Consultar Estado de Incapacidad)
+    uc8(II. Generar Alerta de Plazo Legal)
+    uc9(II. Registrar Transcripción de Incapacidad)
+    uc10(II. Generar Reporte de Ausentismo)
+    uc11(II. Generar Reporte de Incapacidades Prolongadas)
+    uc12(II. Auditar Tiempos de Gestión)
+
+    %% ----------------------------------------------------------------
+    %% Casos de Uso - III. Radicación y Cobro
+    %% ----------------------------------------------------------------
+    uc13(III. Radicar Incapacidad Auto. ante EPS/ARL)
+    uc14(III. Registrar Radicación Manual)
+    uc15(III. Registrar Solicitud de Cobro Persuasivo)
+    uc16(III. Escalar Caso a Área Jurídica)
+
+    %% ----------------------------------------------------------------
+    %% Casos de Uso - IV. Conciliación y Pago
+    %% ----------------------------------------------------------------
+    uc17(IV. Registrar Pago Recibido de EPS/ARL)
+    uc18(IV. Conciliar Pago de Incapacidad)
+    uc19(IV. Integrar con Sistema Contable - Registro Ingreso)
+    uc20(IV. Consultar Historial de Pagos)
+    uc21(IV. Gestionar Rechazo de Incapacidad)
+
+    %% ----------------------------------------------------------------
+    %% Casos de Uso - V. Administración del Sistema
+    %% ----------------------------------------------------------------
+    uc22(V. Administrar Usuarios y Roles)
+    uc23(V. Eliminar Documentos Sensibles de Forma Segura)
+
+    %% ----------------------------------------------------------------
+    %% Relaciones de Inclusión y Extensión
+    %% ----------------------------------------------------------------
+
+    %% Inclusiones
+    uc1 -- include --> uc2
+    uc1 -- include --> uc3
+    uc15 -- include --> uc16
+    uc18 -- include --> uc19
+    uc23 -- include --> uc5
+
+    %% Extensiones
+    uc13 -- extend --> uc14
+
+    %% ----------------------------------------------------------------
+    %% Relaciones entre Actores y Casos de Uso
+    %% ----------------------------------------------------------------
+
+    actor --> uc1
+    actorA --> uc1 & uc2 & uc3 & uc6
+    actorB --> uc3 & uc6 & uc7 & uc8 & uc9 & uc10 & uc11 & uc12 & uc14 & uc15 & uc16 & uc17 & uc18 & uc20 & uc21
+    actorC --> uc7
+    actorD --> uc17 & uc20
+    actorE --> uc22
+    actorF --> uc16
+
+    %% Relaciones entre Sistemas Externos y Casos de Uso
+    entity1 -.- uc19
+    uc13 -.- entity2
+    uc4 -.- entity3
+
+
+======================================================
+2. DIAGRAMA DE SECUENCIA (UC-1: Registrar Incapacidad Médica)
+======================================================
+
+sequenceDiagram
+    participant A as Colaborador/Recepcionista
+    participant C as Sistema de Gestión de Incapacidades
+    participant V as Módulo de Validación Documental
+    participant S as Base de Datos Digital (CAR-08)
+
+    Note over A,C: Inicio: Reporte y Entrega Documentación (Presencial/Multicanal - CAR-02)
+
+    A->>C: 1. Iniciar Registro de Incapacidad (Tipo, Fechas)
+    A->>C: 2. Cargar Documentos Soporte (UC-2 <<include>>)
+    C->>V: 3. Solicitar Validación de Requisitos (UC-3 <<include>>)
+    V-->>C: 4. Resultado de Verificación (OK/Faltante)
+    
+    alt Si Resultado es OK
+        C->>S: 5. Persistir Registro de Incapacidad y Documentos
+        S-->>C: 6. Registro Creado (ID)
+        C->>A: 7. Notificar Registro Exitoso y Trazabilidad (CAR-04)
+    else Si Documentación Incompleta
+        C->>A: 7. Notificar Documentos Faltantes (Requisitos Legales)
+        A->>C: 8. Cargar Documentación Faltante
+    end
+    
+    Note over C: Fin del Flujo
+
+
+======================================================
+3. DIAGRAMA DE ACTIVIDADES (UC-1: Registrar Incapacidad Médica)
+======================================================
+
+activityDiagram
+    start
+    
+    :Colaborador reporta incapacidad;
+    :Entrega documentación completa;
+    
+    partition Recepción / Auxiliar Administrativo
+        :Recibir documentación (multicanal - CAR-02);
+        :Ingresar datos básicos en el Sistema (UC-1);
+        :Cargar archivos al Sistema (UC-2);
+        
+        if (Requisitos Documentales OK?) then (No)
+            :Notificar al Colaborador documentos faltantes;
+            --> wait;
+            :Recibir documentos faltantes;
+        else (Sí)
+            --> Validar;
+        end
+    end
+    
+    partition Sistema de Gestión
+        Validar: Verificar Cumplimiento de Requisitos (UC-3);
+        :Generar registro digital;
+        :Generar código de trazabilidad (CAR-04);
+        :Archivar digitalmente (CAR-08);
+    end
+    
+    partition Gestión Humana (Auxiliar)
+        :Verificar registro y validación;
+        :Autorizar Radicación;
+    end
+    
+    stop
+
+
+======================================================
+4. DIAGRAMA DE CLASES (Contexto UC-1: Estructura General)
+======================================================
+
+classDiagram
+    direction LR
+
+    class Registro_Incapacidad {
+        +ID_Registro : String
+        +Tipo : String (Común/Laboral/Maternidad/Paternidad)
+        +Fecha_Inicio : Date
+        +Duracion_Dias : Integer
+        +Estado_Trazabilidad : String (Pendiente_Validación, Listo_Radicar, etc. - CAR-04)
+        +Documentos_Completos : Boolean
+        +Radicación_Asociada : Radicacion
+    }
+    
+    class Colaborador {
+        +ID_Empleado : String
+        +Nombre : String
+        +Departamento : String
+        +Líder_Inmediato : Jefe_Inmediato
+    }
+    
+    class Documento_Soporte {
+        +Tipo : String (Fórmula/Certificado/etc.)
+        +Ruta_Digital : String
+        +Estado_Fisico : String (Archivado/Pendiente)
+        +Eliminación_Segura_Activada : Boolean (CAR-08)
+    }
+
+    class Radicacion {
+        +ID_Radicacion : String
+        +Entidad : String (EPS/ARL)
+        +Fecha_Radicacion : Date
+        +Evidencia_Radicacion : File
+    }
+    
+    class Jefe_Inmediato {
+        +ID_Líder : String
+        +Nombre : String
+    }
+    
+    Colaborador "1" -- "0..*" Registro_Incapacidad : Realiza
+    Registro_Incapacidad "1" -- "1..*" Documento_Soporte : Contiene
+    Registro_Incapacidad "1" -- "0..1" Radicacion : Se_convierte_en
+    Jefe_Inmediato "1" -- "1..*" Colaborador : Supervisa
+
+
+======================================================
+5. DIAGRAMA DE SECUENCIA (UC-13: Radicar Incapacidad Automáticamente)
+======================================================
+
+sequenceDiagram
+    participant GH as Auxiliar de Gestión Humana
+    participant S as Sistema de Gestión de Incapacidades
+    participant P as Módulo de Integración con Portales
+    participant E as Portales EPS/ARL (Entidad Externa)
+
+    GH->>S: 1. Iniciar Proceso de Radicación (Registro Listo para Radicar)
+    S->>P: 2. Solicitar Radicación Automática (Datos y Documentos)
+    Note over P: Preparación de la información según formato del portal externo
+
+    P->>E: 3. POST /radicarIncapacidad
+    E-->>P: 4. Respuesta de Radicación (ID_Radicación / Error)
+    
+    alt Si Radicación Exitosa
+        P->>S: 5. Informar Radicación OK (ID_Radicación)
+        S->>S: 6. Actualizar Estado de Incapacidad a "Radicada" (CAR-04)
+        S->>S: 7. Registrar Evidencia de Radicación (CAR-10)
+    else Si Falla la Radicación Automática (UC-14 <<extend>>)
+        P->>S: 5. Informar Falla en Radicación Automática
+        S->>GH: 6. Alertar Falla y Sugerir Radicación Manual (UC-14)
+    end
+    
+    S->>GH: 8. Notificar Resultado del Proceso
+
+
+======================================================
+6. DIAGRAMA DE ACTIVIDADES (UC-13: Radicar Incapacidad Automáticamente)
+======================================================
+
+activityDiagram
+    start
+    
+    :Revisar Incapacidades en estado "Listo para Radicar";
+    
+    partition Sistema de Gestión
+        :Iniciar Proceso de Radicación (Automático);
+        :Consultar credenciales y formatos del Portal (EPS/ARL);
+        
+        if (Integración con Portal Disponible?) then (Sí - UC-13)
+            :Enviar Datos y Documentos al Portal Externo;
+            
+            if (Portal Responde con Éxito?) then (Sí)
+                :Registrar ID y Evidencia de Radicación (CAR-10);
+                :Actualizar Estado a "Radicada" (CAR-04);
+                --> Fin;
+            else (No - Falla de Sistema/Comunicación)
+                :Generar Log de Error;
+                --> Radicación Manual;
+            end
+        else (No - UC-14 <<extend>>)
+            Radicación Manual: Notificar al Auxiliar de GH;
+            --> Radicación Manual;
+        end
+    end
+    
+    partition Auxiliar de Gestión Humana
+        Radicación Manual: Recibir Alerta de Radicación Manual Requerida;
+        :Ejecutar Radicación en el portal de la Entidad (Manual);
+        :Cargar Evidencia de Radicación Manual al Sistema (UC-14);
+        :Actualizar Estado a "Radicada" (CAR-04);
+    end
+    
+    Fin: stop
+
+
+======================================================
+7. DIAGRAMA DE ESTADOS (Objeto Incapacidad - Contexto UC-13/Radicación)
+======================================================
+
+stateDiagram-v2
+    direction LR
+    
+    [*] --> Listo_para_Radicar: (Pre-requisito del UC-1)
+    
+    Listo_para_Radicar --> Radicando: Iniciar Radicación Automática (UC-13)
+    
+    Radicando --> Radicada: Radicación Exitosa (Automática/Manual)
+    Radicando --> Pendiente_Radicación_Manual: Falla en Radicación Automática (UC-14 <<extend>>)
+    
+    Pendiente_Radicación_Manual --> Radicada: Radicación Manual Exitosa
+    
+    Radicada --> [*]: Inicia flujo de Seguimiento y Cobro (CAR-04, CAR-05)
+
+
+======================================================
+8. DIAGRAMA DE SECUENCIA (UC-18: Conciliar Pago de Incapacidad)
+======================================================
+
+sequenceDiagram
+    participant D as Tesorería y Contabilidad
+    participant GH as Auxiliar de Gestión Humana
+    participant S as Sistema de Gestión de Incapacidades
+    participant SC as Sistema Contable (Externo)
+    participant BD as Base de Datos (Seguimiento)
+
+    Note over D,GH: Inicio: Tesorería recibe y registra el pago
+
+    D->>S: 1. Registrar Pago Recibido (UC-17)
+    S->>S: 2. Buscar Incapacidad Asociada (Registro)
+    S->>BD: 3. Obtener Valor Esperado de Cobro
+    
+    GH->>S: 4. Iniciar Conciliación (Manual/Automática)
+    S->>S: 5. Comparar Valor Recibido vs. Valor Esperado
+    
+    alt Si Conciliación OK (Valores Coinciden)
+        S->>SC: 6. Integrar Registro de Ingreso (UC-19 <<include>>)
+        SC-->>S: 7. Confirmación de Registro Contable
+        S->>BD: 8. Actualizar Estado de Incapacidad a "Pagada" (CAR-04)
+        S->>GH: 9. Notificar Conciliación Exitosa
+    else Si Diferencia (Rechazo, Pago Parcial, etc.)
+        S->>GH: 6. Notificar Discrepancia
+        GH->>S: 7. Registrar Justificación/Acción (Ej. Solicitar Corrección)
+        S->>BD: 8. Actualizar Estado y Notas de Seguimiento
+    end
+    
+    Note over S,GH: Fin del Proceso de Conciliación
+
+
+======================================================
+9. DIAGRAMA DE ACTIVIDADES (UC-18: Conciliar Pago de Incapacidad)
+======================================================
+
+activityDiagram
+    start
+    
+    partition Tesorería y Contabilidad
+        :Recibir notificación/extracto de pago (EPS/ARL);
+        :Registrar Monto y Referencia del Pago en el Sistema (UC-17);
+    end
+    
+    partition Sistema de Gestión
+        :Identificar Incapacidad y Monto Esperado;
+        :Iniciar Proceso de Conciliación;
+        :Comparar Monto Recibido vs. Monto Esperado;
+        
+        if (Conciliación Exitosa?) then (Sí)
+            :Registrar la Conciliación;
+            :Generar Transacción para el Sistema Contable (UC-19);
+            
+            if (Integración Contable OK?) then (Sí)
+                :Actualizar Estado a "Pagada" (CAR-04);
+                :Registrar en Base de Datos de Seguimiento (CAR-05);
+                --> Fin;
+            else (No - Falla Integración)
+                :Registrar Error Contable;
+                --> Alerta GH;
+            end
+        else (No - Discrepancia)
+            --> Discrepancia;
+        end
+    end
+    
+    partition Auxiliar de Gestión Humana
+        Discrepancia: Recibir Alerta de Discrepancia;
+        :Investigar motivo del rechazo/diferencia;
+        :Definir Acción (Reclamación, Escalamiento a Jurídica - CAR-09);
+        :Registrar la acción/justificación en el Sistema;
+        
+        Alerta GH: Verificar y resolver problemas de integración contable;
+    end
+    
+    Fin: stop
+
+
+======================================================
+10. DIAGRAMA DE ESTADOS (Objeto Incapacidad - Contexto UC-18/Conciliación)
+======================================================
+
+stateDiagram-v2
+    direction LR
+    
+    [*] --> Radicada: (Pre-requisito del UC-13)
+    
+    Radicada --> En_Cobro: Iniciar seguimiento al pago de EPS/ARL
+    
+    En_Cobro --> Pagada: Conciliación Exitosa (UC-18)
+    En_Cobro --> Rechazada: Pago negado por Entidad (UC-21)
+    
+    Rechazada --> En_Cobro_Persuasivo: Escalar a Jurídica/Cartera (CAR-09)
+    En_Cobro_Persuasivo --> Pagada: Cobro Persuasivo Exitoso
+    
+    Pagada --> [*]: Finalización del flujo de pago
+
+
+======================================================
+11. DIAGRAMA DE SECUENCIA (UC-7: Consultar Estado de Incapacidad)
+======================================================
+
+sequenceDiagram
+    participant A as Actor (Colaborador/Jefe/Auxiliar GH)
+    participant C as Sistema de Gestión de Incapacidades
+    participant S as Base de Datos (Trazabilidad - CAR-04)
+
+    A->>C: 1. Iniciar Consulta de Estado (Filtros: ID, Colaborador, Fechas)
+    C->>S: 2. Solicitar Información de Trazabilidad (Registro y Eventos)
+    
+    alt Si Registro Encontrado
+        S-->>C: 3. Devolver Datos de la Incapacidad
+        C->>C: 4. Formatear la Información (Estado Actual, Hitos: Radicada, Cobrada, Pagada)
+        C->>A: 5. Mostrar Resultado de Consulta (Estado y Detalles)
+    else Si Registro No Encontrado
+        S-->>C: 3. Devolver Error: Incapacidad no encontrada
+        C->>A: 5. Mostrar Mensaje de Error
+    end
+    
+    Note over A,C: Fin de la Consulta
+
+
+======================================================
+12. DIAGRAMA DE ACTIVIDADES (UC-7: Consultar Estado de Incapacidad)
+======================================================
+
+activityDiagram
+    start
+    
+    :Actor ingresa al módulo de consulta;
+    
+    partition Interfaz del Sistema
+        :Ingresar criterio de búsqueda (ID de registro o datos del colaborador);
+        :Enviar solicitud de consulta;
+    end
+    
+    partition Motor de Búsqueda y Trazabilidad
+        :Recibir criterio de búsqueda;
+        
+        if (Registro de Incapacidad Encontrado?) then (Sí)
+            :Recuperar Registro Principal;
+            :Recuperar Log de Eventos (Cambios de Estado: Transcrita, Pagada, etc.);
+            :Determinar Estado Actual (CAR-04);
+            --> Mostrar Resultado;
+        else (No)
+            --> Mostrar Error;
+        end
+    end
+    
+    partition Interfaz del Sistema
+        Mostrar Error: Presentar mensaje "Registro no encontrado";
+        --> end
+        
+        Mostrar Resultado: Presentar datos clave (Colaborador, Fechas, Estado Actual);
+        :Presentar historial de eventos y fechas;
+    end
+    
+    end
+
+
+======================================================
+13. DIAGRAMA DE CLASES (Contexto UC-7: Trazabilidad y Eventos)
+======================================================
+
+classDiagram
+    direction LR
+
+    class Registro_Incapacidad {
+        +ID_Registro : String
+        +Tipo : String
+        +Fecha_Inicio : Date
+        +Estado_Actual : String (CAR-04)
+        +Colaborador_ID : String
+    }
+    
+    class Evento_Trazabilidad {
+        +ID_Evento : String
+        +Fecha_Hora : DateTime
+        +Nuevo_Estado : String (Ej. Transcrita, Cobrada)
+        +Usuario_Registro : String
+    }
+
+    class Colaborador {
+        +ID_Empleado : String
+        +Nombre : String
+    }
+    
+    Registro_Incapacidad "1" -- "1..*" Evento_Trazabilidad : Define_Estado
+    Colaborador "1" -- "0..*" Registro_Incapacidad : Es_de
