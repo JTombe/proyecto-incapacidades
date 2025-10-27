@@ -1,0 +1,62 @@
+###########################
+# General y Configuraciones
+###########################
+.git
+.gitignore
+.dockerignore
+.vscode/    # Ignora configuraciones locales del IDE
+.idea/      # Ignora configuraciones de JetBrains
+.DS_Store
+
+###########################
+# C# / .NET (ASP.NET Core)
+###########################
+# Directorios de compilación local que no deben ir en la imagen
+**/[Bb]in/
+**/[Oo]bj/
+
+# Paquetes de NuGet y archivos temporales
+*.nupkg
+*.user
+*.suo
+*.pdb
+
+###########################
+# Python
+###########################
+# Entornos virtuales
+.venv
+venv/
+env/
+
+# Caché y archivos de compilación
+__pycache__/
+*.py[co]
+build/
+dist/
+.pytest_cache/
+
+###########################
+# JavaScript / Node (React)
+###########################
+# Dependencias de Node.js
+# Se instalan DENTRO del contenedor, no deben copiarse desde afuera
+node_modules
+
+# Caché y logs
+npm-debug.log*
+yarn-error.log*
+.cache
+
+# Archivos de entorno local/secreto
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# Carpetas Especiales
+build/
+/build
+docs/
+/docs
