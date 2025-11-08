@@ -1,0 +1,68 @@
+.app-navbar {
+  /* Barra superior con layout vertical para colocar botones en la parte inferior */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* logo arriba, botones abajo */
+  align-items: center;
+  height: 64px;
+  padding: 8px 20px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  color: white;
+}
+
+.navbar-left {
+  align-self: flex-start; /* logo en la parte superior izquierda */
+}
+
+.navbar-logo {
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.navbar-right {
+  /* contenedor de botones en la parte inferior de la navbar */
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  /* si se añaden muchos botones, permitir scroll horizontal */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+.nav-button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--color-text);
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.05);
+  font-weight: 600;
+  white-space: nowrap; /* evitar salto de texto en cada botón */
+  flex: 0 0 auto; /* evitar que los botones se encojan al hacer scroll */
+}
+
+.nav-button--primary {
+  background: var(--color-primary);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* esconder barra de scroll en navegadores modernos (opcional) */
+.navbar-right::-webkit-scrollbar { height: 6px; }
+.navbar-right::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 6px; }
+
+@media (max-width: 600px) {
+  .app-navbar {
+    height: 56px;
+    padding: 6px 12px;
+  }
+  .nav-button {
+    padding: 6px 8px;
+    font-size: 0.9rem;
+  }
+}

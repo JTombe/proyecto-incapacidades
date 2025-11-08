@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../css/SignupForm.css';
 
 const SignUpForm = () => {
   // Estado para almacenar los datos del formulario
@@ -82,12 +83,12 @@ const SignUpForm = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="signup-container">
       <h2>Registro de Usuario</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
+      <form onSubmit={handleSubmit} className="signup-form">
         
         {/* Campo: Nombre Completo */}
-        <div style={styles.group}>
+        <div className="form-group">
           <label htmlFor="nombreCompleto">Nombre Completo:</label>
           <input
             type="text"
@@ -95,13 +96,13 @@ const SignUpForm = () => {
             name="nombreCompleto"
             value={formData.nombreCompleto}
             onChange={handleChange}
-            style={styles.input}
+            className="form-input"
           />
-          {errors.nombreCompleto && <p style={styles.error}>{errors.nombreCompleto}</p>}
+          {errors.nombreCompleto && <p className="error-message">{errors.nombreCompleto}</p>}
         </div>
 
         {/* Campo: Número de ID */}
-        <div style={styles.group}>
+        <div className="form-group">
           <label htmlFor="numeroId">Número de Identificación:</label>
           <input
             type="text"
@@ -109,13 +110,13 @@ const SignUpForm = () => {
             name="numeroId"
             value={formData.numeroId}
             onChange={handleChange}
-            style={styles.input}
+            className="form-input"
           />
-          {errors.numeroId && <p style={styles.error}>{errors.numeroId}</p>}
+          {errors.numeroId && <p className="error-message">{errors.numeroId}</p>}
         </div>
 
         {/* Campo: Dependencia */}
-        <div style={styles.group}>
+        <div className="form-group">
           <label htmlFor="dependencia">Dependencia:</label>
           <input
             type="text"
@@ -123,13 +124,13 @@ const SignUpForm = () => {
             name="dependencia"
             value={formData.dependencia}
             onChange={handleChange}
-            style={styles.input}
+            className="form-input"
           />
-          {errors.dependencia && <p style={styles.error}>{errors.dependencia}</p>}
+          {errors.dependencia && <p className="error-message">{errors.dependencia}</p>}
         </div>
 
         {/* Campo: Correo Electrónico */}
-        <div style={styles.group}>
+        <div className="form-group">
           <label htmlFor="correo">Correo Electrónico:</label>
           <input
             type="email"
@@ -137,13 +138,13 @@ const SignUpForm = () => {
             name="correo"
             value={formData.correo}
             onChange={handleChange}
-            style={styles.input}
+            className="form-input"
           />
-          {errors.correo && <p style={styles.error}>{errors.correo}</p>}
+          {errors.correo && <p className="error-message">{errors.correo}</p>}
         </div>
 
         {/* Campo: Contraseña */}
-        <div style={styles.group}>
+        <div className="form-group">
           <label htmlFor="contrasena">Contraseña:</label>
           <input
             type="password"
@@ -151,13 +152,13 @@ const SignUpForm = () => {
             name="contrasena"
             value={formData.contrasena}
             onChange={handleChange}
-            style={styles.input}
+            className="form-input"
           />
-          {errors.contrasena && <p style={styles.error}>{errors.contrasena}</p>}
+          {errors.contrasena && <p className="error-message">{errors.contrasena}</p>}
         </div>
 
         {/* Campo: Confirmar Contraseña (Importante para seguridad) */}
-        <div style={styles.group}>
+        <div className="form-group">
           <label htmlFor="confirmarContrasena">Confirmar Contraseña:</label>
           <input
             type="password"
@@ -165,13 +166,13 @@ const SignUpForm = () => {
             name="confirmarContrasena"
             value={formData.confirmarContrasena}
             onChange={handleChange}
-            style={styles.input}
+            className="form-input"
           />
-          {errors.confirmarContrasena && <p style={styles.error}>{errors.confirmarContrasena}</p>}
+          {errors.confirmarContrasena && <p className="error-message">{errors.confirmarContrasena}</p>}
         </div>
 
         {/* Botón de Envío */}
-        <button type="submit" disabled={isSubmitting} style={styles.button}>
+        <button type="submit" disabled={isSubmitting} className="submit-button">
           {isSubmitting ? 'Registrando...' : 'Registrarse'}
         </button>
       </form>
@@ -181,43 +182,3 @@ const SignUpForm = () => {
 
 export default SignUpForm;
 
-// Estilos básicos para el ejemplo (puedes usar CSS/Tailwind/Styled-Components en su lugar)
-const styles = {
-  container: {
-    maxWidth: '400px',
-    margin: '50px auto',
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  group: {
-    marginBottom: '15px',
-  },
-  input: {
-    width: '100%',
-    padding: '10px',
-    margin: '5px 0',
-    boxSizing: 'border-box',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-  },
-  error: {
-    color: 'red',
-    fontSize: '0.85em',
-    marginTop: '5px',
-  },
-  button: {
-    backgroundColor: '#007bff',
-    color: 'white',
-    padding: '10px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginTop: '10px',
-  }
-};
