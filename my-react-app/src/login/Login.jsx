@@ -2,11 +2,23 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
+
+
 const Login = () => {
   const [formData, setFormData] = useState({ correo: '', contrasena: '' });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+
+  const handleLogin = () => {
+    setToken("this is a test token");
+    navigate("/", { replace: true });
+  };
+
+  setTimeout(() => {
+    handleLogin();
+  }, 3 * 1000);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
