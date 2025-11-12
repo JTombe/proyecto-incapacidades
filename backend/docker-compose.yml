@@ -1,0 +1,47 @@
+services:
+  mariadb:
+    image: mariadb:12.0.2
+    container_name: proyecto_mariadb
+    env_file:
+      - .env
+    environment:
+      # Configure root password and database name. Do NOT set MARIADB_USER when DB_USER is 'root'.
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      # Host:Container -> puerto configurable via .env (host:container)
+      - "${DB_PORT}:3306"
+    healthcheck:
+      # Usamos CMD-SHELL para poder interpolar las variables de entorno desde .env
+      # Ejecuta un SELECT 1 usando el cliente mysql con las credenciales proporcionadas
+      # Use MYSQL_PWD to avoid shell issues with -p and special characters in the password
+      test: ["CMD-SHELL", "MYSQL_PWD='${DB_PASSWORD}' mariadb -h127.0.0.1 -u${DB_USER} -e \"SELECT 1\" >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+
+  api:
+    build:
+      context: ..
+      dockerfile: backend/API/Dockerfile
+    container_name: proyecto_api
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      # Inyectamos la cadena de conexión para EF Core desde las variables de entorno
+      # Nota: la API conecta al servicio 'mariadb' dentro de la red de Compose,
+      # el puerto interno del contenedor es 3306. No usemos el puerto del host aquí.
+      ASPNETCORE_ConnectionStrings__IncapacidadesDatabase: "Server=mariadb;Port=3306;Database=${DB_NAME};User=${DB_USER};Password=${DB_PASSWORD};"
+    ports:
+      - "5192:80"
+    restart: on-failure
+
+volumes:
+  mariadb_data:
