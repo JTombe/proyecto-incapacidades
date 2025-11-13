@@ -24,22 +24,26 @@ public class Program
         var app = builder.Build();
 
         // Aplicar migraciones automáticamente al iniciar (útil para entorno Docker)
-        try
+        // Solo lo hacemos en entornos de desarrollo o Docker para no bloquear producción
+        if (app.Environment.IsDevelopment() || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")))
         {
-            using var scope = app.Services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<IncapacidadesDbContext>();
-            db.Database.Migrate();
+            try
+            {
+                using var scope = app.Services.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<IncapacidadesDbContext>();
+                db.Database.Migrate();
 
-            // Ejecutar seed para crear un usuario admin si no existe
-            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            DbSeeder.SeedAsync(db, configuration, logger).GetAwaiter().GetResult();
-        }
-        catch (Exception ex)
-        {
-            var logger = app.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "Error aplicando migraciones o seed a la base de datos");
-            throw;
+                // Ejecutar seed para crear un usuario admin si no existe
+                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                DbSeeder.SeedAsync(db, configuration, logger).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                var logger = app.Services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "Error aplicando migraciones o seed a la base de datos");
+                // No relanzamos para no hacer fallar el contenedor en caso de error temporal
+            }
         }
 
         ConfigurePipeline(app);

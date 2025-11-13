@@ -20,14 +20,18 @@ public static class DependencyInjection
         // hacemos un fallback seguro y construimos la cadena en runtime.
         var connectionString = configuration.GetConnectionString("IncapacidadesDatabase");
 
-        // Si la cadena está vacía o contiene una variable sin resolver, armamos
-        // una connection string por defecto que apunta al servicio 'mariadb'
+        // Si la cadena está vacía, contiene una variable sin resolver (${...}),
+        // o intenta conectar a 'localhost' (que no funciona dentro del contenedor),
+        // armamos una connection string por defecto que apunta al servicio 'mariadb'
         // dentro de la red de docker-compose (puerto interno 3306).
-        if (string.IsNullOrWhiteSpace(connectionString) || connectionString.Contains("${"))
+        if (string.IsNullOrWhiteSpace(connectionString) ||
+            connectionString.Contains("${") ||
+            connectionString.Contains("localhost", StringComparison.OrdinalIgnoreCase) ||
+            connectionString.Contains("127.0.0.1", StringComparison.OrdinalIgnoreCase))
         {
-            var dbName = configuration["DB_NAME"] ?? configuration["DB_NAME"];
-            var dbUser = configuration["DB_USER"] ?? configuration.GetSection("ConnectionStrings")["User"] ?? "root";
-            var dbPassword = configuration["DB_PASSWORD"] ?? configuration.GetSection("ConnectionStrings")["Password"] ?? string.Empty;
+            var dbName = configuration["DB_NAME"] ?? "gestion_incapacidades";
+            var dbUser = configuration["DB_USER"] ?? "root";
+            var dbPassword = configuration["DB_PASSWORD"] ?? "120054";
 
             if (string.IsNullOrWhiteSpace(dbName))
             {
