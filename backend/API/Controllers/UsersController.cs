@@ -77,13 +77,13 @@ public class UsersController : ControllerBase
 
         if (updateDto.FirstName != null)
             user.FirstName = updateDto.FirstName;
-        
+
         if (updateDto.LastName != null)
             user.LastName = updateDto.LastName;
-        
+
         if (updateDto.IsActive.HasValue)
             user.IsActive = updateDto.IsActive.Value;
-        
+
         if (updateDto.Roles != null)
             user.Roles = updateDto.Roles;
 

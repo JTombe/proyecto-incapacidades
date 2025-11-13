@@ -113,9 +113,10 @@ docker compose up --build
 3. Accede al Swagger en `http://localhost:5192/swagger/index.html` (o el puerto que hayas definido en `API_PORT_HOST` en el `.env`).
 
 Notas:
+
 - El `docker-compose.yml` en `backend/` usa las variables del archivo `.env` para configurar credenciales y puertos.
 - La base de datos por defecto está configurada con el nombre `gestion_incapacidades` (variable `DB_NAME`).
-- Al iniciar la API, se aplican migraciones automáticamente y se ejecuta un *seed* que crea un usuario admin si no existe.
+- Al iniciar la API, se aplican migraciones automáticamente y se ejecuta un _seed_ que crea un usuario admin si no existe.
 - Credenciales por defecto de seed (puedes modificarlas en `.env`):
   - `SEED_ADMIN_USERNAME`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`.
 
@@ -137,4 +138,3 @@ dotnet list package --outdated
 ---
 
 > **Nota:** Ajuste credenciales y rutas de almacenamiento antes de desplegar en entornos productivos. Mantenga las claves JWT y la cadena de conexión fuera de control de versiones utilizando variables de entorno o gestores de secretos.
-

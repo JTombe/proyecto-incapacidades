@@ -11,11 +11,37 @@ public static class DbSeeder
     {
         try
         {
-            // Si ya hay usuarios, no hacemos nada
-            if (await db.Set<User>().AnyAsync())
+            // Asegurarnos de que la base de datos tiene las tablas creadas.
+            // Si no existen, `AnyAsync()` lanzará una excepción; en ese caso
+            // usamos EnsureCreated para crear el esquema a partir del modelo.
+            try
             {
-                logger.LogInformation("Usuarios ya presentes en la base de datos; saltando seed.");
-                return;
+                if (await db.Set<User>().AnyAsync())
+                {
+                    logger.LogInformation("Usuarios ya presentes en la base de datos; saltando seed.");
+                    return;
+                }
+            }
+            catch (Exception exTable)
+            {
+                logger.LogWarning(exTable, "Tabla Users no encontrada. Intentando crear el esquema con EnsureCreated().");
+                await db.Database.EnsureCreatedAsync();
+
+                // Si EnsureCreated no creó las tablas (por ejemplo porque existe __EFMigrationsHistory),
+                // evitamos lanzar y terminamos el seed con una advertencia para no hacer fallar el contenedor.
+                try
+                {
+                    if (!await db.Set<User>().AnyAsync())
+                    {
+                        logger.LogWarning("Después de EnsureCreated(), la tabla Users sigue sin existir — saltando seed. Agregue migraciones o cree la tabla manualmente.");
+                        return;
+                    }
+                }
+                catch (Exception exStill)
+                {
+                    logger.LogWarning(exStill, "Después de EnsureCreated() la tabla Users no está disponible — saltando seed.");
+                    return;
+                }
             }
 
             // Intentamos leer configuración estructurada: Seed:Admin:Username
