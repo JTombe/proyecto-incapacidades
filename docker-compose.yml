@@ -66,21 +66,26 @@ services:
 #   # ----------------------------------------------------
 #   # 4. Frontend: React
 #   # ----------------------------------------------------
-#   frontend:
-#     build:
-#       context: .src/frontend # Ruta a la carpeta de tu proyecto React/Dockerfile
-#       dockerfile: Dockerfile
-#     container_name: frontend
-#     ports:
-#       # Mapea el puerto 3000 del host al puerto 80 del contenedor (servidor Nginx/React)
-#       - "3000:80" 
-#     environment:
-#       # Define la URL de tu API para que el frontend pueda llamarla
-#       REACT_APP_API_URL: http://localhost:8080 # O la URL final si es para producción
-#     depends_on:
-#       - backend
-#     restart: unless-stopped
-
+  frontend:
+      # 1. Indicamos que construya la imagen desde el directorio actual (.).
+      build: 
+        context: .
+        # 2. ESPECIFICAMOS el nombre del archivo Dockerfile que debe usar.
+        dockerfile: Dockerfile.dev 
+      
+      command: npm start
+      
+      ports:
+        - '3000:3000'
+        
+      volumes:
+        - .:/app
+        - /app/node_modules
+        
+      working_dir: /app
+      
+      environment:
+        - CHOKIDAR_USEPOLLING=true
 
 
 # # ----------------------------------------------------
