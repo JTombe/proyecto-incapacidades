@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import SignUpForm from '../signup/SignupForm'; // Asume que SignUpForm.jsx está en el mismo nivel
-import Login from '../login/Login';
+
 import Navbar from '../navbar/Navbar';
-import AuthProvider from "../Javascript&jsx/context/context.jsx";
-import Routes from "./routes";
+import { AuthProvider } from "../Javascript&jsx/context/AuthContext.jsx";
+import SignUpForm from '../signup/SignupForm';
+import Login from '../login/Login';
+
 // importamos los demás componentes para que react router funcione
 
 // Componente para la página de inicio o cualquier otra página con el botón
@@ -36,12 +37,10 @@ const HomePage = () => {
 // Componente principal: define las rutas
 const App = () => {
   return (
-    <Router>
+    <AuthProvider>
       <Navbar />
-      <AuthProvider>
-        <Routes /> 
-      </AuthProvider>
-    </Router>
+      <Routes />
+    </AuthProvider>
   );
 };
 
