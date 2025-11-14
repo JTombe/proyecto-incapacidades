@@ -14,7 +14,11 @@ const Logout = () => {
     handleLogout();
   }, 3 * 1000);
 
-  return <>Logout Page</>;
+  return (<div>
+    <h2>You have been logged out.</h2>
+    <p>Redirecting to home page...</p>
+  </div>
+  );
 };
 
 export default Logout;
