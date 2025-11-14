@@ -68,6 +68,12 @@ public class IncapacidadService : IIncapacidadService
         return incapacidades.Select(i => MapToResponse(i, i.Empleado?.NombreCompleto)).ToList();
     }
 
+    public async Task<IReadOnlyCollection<IncapacidadResponse>> ObtenerTodasAsync(EstadoIncapacidad? estado = null, DateTime? desde = null, DateTime? hasta = null, CancellationToken cancellationToken = default)
+    {
+        var incapacidades = await _incapacidadRepository.GetAllAsync(estado, desde, hasta, cancellationToken);
+        return incapacidades.Select(i => MapToResponse(i, i.Empleado?.NombreCompleto)).ToList();
+    }
+
     public async Task ActualizarEstadoAsync(Guid incapacidadId, ActualizarEstadoIncapacidadRequest request, CancellationToken cancellationToken = default)
     {
         var incapacidad = await _incapacidadRepository.GetByIdWithDetailsAsync(incapacidadId, cancellationToken)
@@ -116,7 +122,7 @@ public class IncapacidadService : IIncapacidadService
     public async Task<EstadoCobroResponse> VerificarEstadoCobroAsync(Guid incapacidadId, CancellationToken cancellationToken = default)
     {
         var incapacidad = await _incapacidadRepository.GetByIdWithDetailsAsync(incapacidadId, cancellationToken)
-                           ?? throw new KeyNotFoundException($"Incapacidad {incapacidadId} no encontrada");
+                            ?? throw new KeyNotFoundException($"Incapacidad {incapacidadId} no encontrada");
 
         var ultimoPago = incapacidad.Pagos.OrderByDescending(p => p.FechaPago).FirstOrDefault();
 
@@ -128,6 +134,64 @@ public class IncapacidadService : IIncapacidadService
             FechaPago = ultimoPago?.FechaPago,
             ValorPagado = ultimoPago?.Valor
         };
+    }
+
+    public async Task<IncapacidadResponse> ActualizarIncapacidadAsync(Guid incapacidadId, ActualizarIncapacidadRequest request, CancellationToken cancellationToken = default)
+    {
+        var incapacidad = await _incapacidadRepository.GetByIdWithDetailsAsync(incapacidadId, cancellationToken)
+                            ?? throw new KeyNotFoundException($"Incapacidad {incapacidadId} no encontrada");
+
+        // Actualizar campos proporcionados
+        if (request.Tipo.HasValue)
+        {
+            incapacidad.ActualizarTipo(request.Tipo.Value, request.Usuario);
+        }
+
+        if (request.Diagnostico is not null)
+        {
+            incapacidad.ActualizarDiagnostico(request.Diagnostico, request.Usuario);
+        }
+
+        if (request.EPS is not null)
+        {
+            incapacidad.ActualizarEPS(request.EPS, request.Usuario);
+        }
+
+        // Actualizar fechas si se proporcionan ambas o al menos una
+        if (request.FechaInicio.HasValue || request.FechaFin.HasValue)
+        {
+            var nuevaFechaInicio = request.FechaInicio ?? incapacidad.FechaInicio;
+            var nuevaFechaFin = request.FechaFin ?? incapacidad.FechaFin;
+
+            incapacidad.ActualizarFechas(nuevaFechaInicio, nuevaFechaFin, request.Usuario);
+        }
+        else
+        {
+            // Actualizar timestamps si no se cambiaron fechas
+            incapacidad.UpdatedAt = DateTime.UtcNow;
+            incapacidad.UpdatedBy = request.Usuario;
+        }
+
+        await _incapacidadRepository.UpdateAsync(incapacidad, cancellationToken);
+        await _incapacidadRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Incapacidad {IncapacidadId} actualizada por {Usuario}", incapacidadId, request.Usuario);
+
+        return MapToResponse(incapacidad, incapacidad.Empleado?.NombreCompleto);
+    }
+
+    public async Task EliminarIncapacidadAsync(Guid incapacidadId, string usuario, CancellationToken cancellationToken = default)
+    {
+        var exists = await _incapacidadRepository.ExistsAsync(incapacidadId, cancellationToken);
+        if (!exists)
+        {
+            throw new KeyNotFoundException($"Incapacidad {incapacidadId} no encontrada");
+        }
+
+        await _incapacidadRepository.DeleteAsync(incapacidadId, usuario, cancellationToken);
+        await _incapacidadRepository.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Incapacidad {IncapacidadId} eliminada (soft delete) por {Usuario}", incapacidadId, usuario);
     }
 
     private static IncapacidadResponse MapToResponse(Incapacidad incapacidad, string? empleadoNombre)

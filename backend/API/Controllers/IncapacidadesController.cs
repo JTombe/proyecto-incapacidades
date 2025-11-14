@@ -83,6 +83,19 @@ public class IncapacidadesController : ControllerBase
         return Ok(ApiResponse<IReadOnlyCollection<IncapacidadResponse>>.SuccessResponse(response));
     }
 
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<IncapacidadResponse>>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<IncapacidadResponse>>>> ObtenerTodas(
+        [FromQuery] EstadoIncapacidad? estado,
+        [FromQuery] DateTime? desde,
+        [FromQuery] DateTime? hasta,
+        CancellationToken cancellationToken)
+    {
+        var response = await _incapacidadService.ObtenerTodasAsync(estado, desde, hasta, cancellationToken);
+        return Ok(ApiResponse<IReadOnlyCollection<IncapacidadResponse>>.SuccessResponse(response));
+    }
+
     [HttpPost("{id:guid}/documentos")]
     [Authorize(Policy = "GestionHumana")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -108,6 +121,43 @@ public class IncapacidadesController : ControllerBase
         catch (KeyNotFoundException ex)
         {
             _logger.LogWarning(ex, "No se encontraron registros para agregar documentos a la incapacidad {IncapacidadId}", id);
+            return NotFound(ApiResponse<string>.FailureResponse(ex.Message));
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    [Authorize(Policy = "GestionHumana")]
+    [ProducesResponseType(typeof(ApiResponse<IncapacidadResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<IncapacidadResponse>>> Actualizar(Guid id, [FromBody] ActualizarIncapacidadRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _incapacidadService.ActualizarIncapacidadAsync(id, request, cancellationToken);
+            return Ok(ApiResponse<IncapacidadResponse>.SuccessResponse(response, "Incapacidad actualizada correctamente."));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            _logger.LogWarning(ex, "Intento de actualización de incapacidad inexistente {IncapacidadId}", id);
+            return NotFound(ApiResponse<string>.FailureResponse(ex.Message));
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "GestionHumana")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Eliminar(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var usuario = User.Identity?.Name ?? "sistema";
+            await _incapacidadService.EliminarIncapacidadAsync(id, usuario, cancellationToken);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            _logger.LogWarning(ex, "Intento de eliminación de incapacidad inexistente {IncapacidadId}", id);
             return NotFound(ApiResponse<string>.FailureResponse(ex.Message));
         }
     }

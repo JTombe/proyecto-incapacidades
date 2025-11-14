@@ -59,7 +59,10 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IIncapacidadRepository, IncapacidadRepository>();
+        services.AddScoped<IEmpleadoRepository, EmpleadoRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IDocumentStorageService, LocalDocumentStorageService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

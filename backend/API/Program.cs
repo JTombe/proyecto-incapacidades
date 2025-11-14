@@ -17,6 +17,29 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        // Cargar variables de entorno desde .env en desarrollo
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Production")
+        {
+            var envFile = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+            if (File.Exists(envFile))
+            {
+                foreach (var line in File.ReadAllLines(envFile))
+                {
+                    var trimmedLine = line.Trim();
+                    if (!string.IsNullOrWhiteSpace(trimmedLine) && !trimmedLine.StartsWith("#"))
+                    {
+                        var separatorIndex = trimmedLine.IndexOf('=');
+                        if (separatorIndex > 0)
+                        {
+                            var key = trimmedLine.Substring(0, separatorIndex).Trim();
+                            var value = trimmedLine.Substring(separatorIndex + 1).Trim();
+                            Environment.SetEnvironmentVariable(key, value);
+                        }
+                    }
+                }
+            }
+        }
+
         var builder = WebApplication.CreateBuilder(args);
 
         ConfigureServices(builder.Services, builder.Configuration);
@@ -140,7 +163,12 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        // Solo redirigir a HTTPS en producción
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+
         app.UseCors("AllowAll");
         app.UseAuthentication();
         app.UseAuthorization();

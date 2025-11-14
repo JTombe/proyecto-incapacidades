@@ -66,6 +66,27 @@ public class Incapacidad : AuditableEntity<Guid>
         UpdatedBy = usuario;
     }
 
+    public void ActualizarTipo(TipoIncapacidad tipo, string usuario)
+    {
+        Tipo = tipo;
+        UpdatedAt = DateTime.UtcNow;
+        UpdatedBy = usuario;
+    }
+
+    public void ActualizarDiagnostico(string diagnostico, string usuario)
+    {
+        Diagnostico = diagnostico;
+        UpdatedAt = DateTime.UtcNow;
+        UpdatedBy = usuario;
+    }
+
+    public void ActualizarEPS(string eps, string usuario)
+    {
+        EPS = eps;
+        UpdatedAt = DateTime.UtcNow;
+        UpdatedBy = usuario;
+    }
+
     public Documento AgregarDocumento(TipoDocumento tipo, string urlArchivo, string? nombreOriginal = null)
     {
         var documento = new Documento(Id, tipo, urlArchivo, nombreOriginal);
