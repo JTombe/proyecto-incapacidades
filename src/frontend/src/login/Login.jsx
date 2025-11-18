@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
+import './index.css';
 import { useAuth } from '../Javascript&jsx/context/context.jsx';
 
 const Login = () => {

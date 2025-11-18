@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './SignupForm.css';
+import '../index.css';
 
 const SignUpForm = () => {
   // Estado para almacenar los datos del formulario
