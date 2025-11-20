@@ -2,7 +2,7 @@
 // La URL base del backend puede sobreescribirse con la variable de entorno
 // REACT_APP_API_URL (por ejemplo en .env local).
 
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5192/swagger/index.html';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5192';
 
 export const ENDPOINTS = {
   AUTH_LOGIN: `${API_BASE_URL}/api/auth/login`,
@@ -17,6 +17,7 @@ export const ROLES = {
   RECEPCIONISTA: 'recepcionista',
   TRABAJADOR: 'trabajador',
   USUARIO: 'usuario',
+  GESTOR_HUMANA: 'gestor_humana',
 };
 
 export default {
