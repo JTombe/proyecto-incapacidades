@@ -1,23 +1,25 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 const Logout = () => {
-  const { setToken } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    setToken();
-    navigate("/", { replace: true });
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      logout();
+      navigate("/", { replace: true });
+    }, 3 * 1000);
 
-  setTimeout(() => {
-    handleLogout();
-  }, 3 * 1000);
+    return () => clearTimeout(timer);
+  }, [logout, navigate]);
 
-  return (<div>
-    <h2>You have been logged out.</h2>
-    <p>Redirecting to home page...</p>
-  </div>
+  return (
+    <div>
+      <h2>You have been logged out.</h2>
+      <p>Redirecting to home page...</p>
+    </div>
   );
 };
 

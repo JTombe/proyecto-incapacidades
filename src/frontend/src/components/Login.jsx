@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../index.css';
 import { useAuth } from '../context/AuthContext';
+import { login as loginService } from '../service/authentication';
 
 const Login = () => {
   const [formData, setFormData] = useState({ correo: '', contrasena: '' });
@@ -10,14 +11,7 @@ const Login = () => {
   const { setToken } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    setToken("this is a test token");
-    navigate("/", { replace: true });
-  };
-
-  setTimeout(() => {
-    handleLogin();
-  }, 3 * 1000);
+  // Elimina el login simulado
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,25 +28,27 @@ const Login = () => {
     return Object.keys(temp).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
-
-    // Aquí iría la llamada a la API de autenticación (fetch/axios).
-    // Simulamos éxito o fallo con setTimeout.
-    setTimeout(() => {
-      setIsSubmitting(false);
-      // En una app real: si auth ok -> guardar token / contexto y redirigir
-      // Por ahora redirigimos a la home como ejemplo
+    setErrors({});
+    try {
+      const result = await loginService(formData.correo, formData.contrasena);
+      setToken(result.token);
       navigate('/');
-    }, 1200);
+    } catch (err) {
+      setErrors({ general: err.message || 'Error de autenticación' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit} className="login-form">
+        {errors.general && <p className="login-error">{errors.general}</p>}
         <div className="login-group">
           <label htmlFor="correo">Correo:</label>
           <input
