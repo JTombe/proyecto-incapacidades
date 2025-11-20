@@ -66,6 +66,28 @@ export const getUserById = async (id) => {
 	}
 };
 
+// Obtener incapacidades por empleado
+// retorna un arreglo de IncapacidadResponse u lanza Error
+export const getIncapacidadesByEmpleado = async (empleadoId, desde, hasta) => {
+	try {
+		const params = {};
+		if (desde) params.desde = new Date(desde).toISOString();
+		if (hasta) params.hasta = new Date(hasta).toISOString();
+
+		const query = new URLSearchParams(params).toString();
+		const url = `${ENDPOINTS.INCAPACIDADES}/empleado/${empleadoId}` + (query ? `?${query}` : '');
+
+		const response = await axios.get(url);
+		if (response.data && response.data.success) return response.data.data;
+		throw new Error(response.data?.message || 'Error al obtener incapacidades');
+	} catch (err) {
+		if (err.response && err.response.data) {
+			throw new Error(err.response.data?.message || JSON.stringify(err.response.data));
+		}
+		throw err;
+	}
+};
+
 export default {
 	registrarIncapacidad,
 	getUserById,
