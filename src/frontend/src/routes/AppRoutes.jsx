@@ -3,6 +3,10 @@ import { ProtectedRoute } from "./protectedRoutes";
 import Logout from "../components/Logout";
 import Login from "../components/Login";
 import SignUpForm from "../components/SignupForm";
+import RegistrarIncapacidad from "../components/Users/RegistrarIncapacidad";
+import EstadoIncapacidades from "../components/Users/EstadoIncapacidades";
+import ConsultarIncapacidades from "../components/Users/ConsultarIncapacidades";
+import HorariosEmpleados from "../components/Users/HorariosEmpleados";
 
 const AppRoutes = () => {
   return (
@@ -18,6 +22,15 @@ const AppRoutes = () => {
       <Route element={<ProtectedRoute />}>
         <Route path="/profile" element={<div>User Profile</div>} />
         <Route path="/logout" element={<Logout />} />
+        {/* Empleado */}
+        <Route path="/empleado/registrar" element={<RegistrarIncapacidad />} />
+        <Route path="/empleado/estado" element={<EstadoIncapacidades />} />
+
+        {/* Recepcionista */}
+        <Route path="/recepcionista/consultar" element={<ConsultarIncapacidades />} />
+
+        {/* Jefe de área */}
+        <Route path="/jefe/horarios" element={<HorariosEmpleados />} />
       </Route>
     </RouterRoutes>
   );
