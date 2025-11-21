@@ -130,62 +130,76 @@ code {
 
 /* Navbar styles */
 .app-navbar {
-  /* Barra superior con layout vertical para colocar botones en la parte inferior */
   display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* logo arriba, botones abajo */
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   height: 64px;
-  padding: 8px 20px;
+  padding: 0 20px;
   background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar-left {
-  align-self: flex-start; /* logo en la parte superior izquierda */
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .navbar-logo {
   font-weight: 700;
   color: white;
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
-.navbar-right {
-  /* contenedor de botones en la parte inferior de la navbar */
+.navbar-links {
   display: flex;
   gap: 10px;
   align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  /* si se añaden muchos botones, permitir scroll horizontal */
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 4px;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .nav-button {
   padding: 8px 12px;
   border-radius: 6px;
   text-decoration: none;
-  color: var(--color-text);
-  background: rgba(255,255,255,0.85);
-  border: 1px solid rgba(0,0,0,0.05);
+  color: white;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
   font-weight: 600;
-  white-space: nowrap; /* evitar salto de texto en cada botón */
-  flex: 0 0 auto; /* evitar que los botones se encojan al hacer scroll */
+  white-space: nowrap;
+}
+
+.nav-button:hover {
+  background: rgba(255,255,255,0.14);
 }
 
 .nav-button--primary {
-  background: var(--color-primary);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.1);
+  background: white;
+  color: var(--color-primary);
+  font-weight: 700;
+  border: none;
 }
 
-/* esconder barra de scroll en navegadores modernos (opcional) */
-.navbar-right::-webkit-scrollbar { height: 6px; }
-.navbar-right::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 6px; }
+.nav-button--danger {
+  background: rgba(255,0,0,0.12);
+  color: white;
+  border: 1px solid rgba(255,0,0,0.2);
+}
+
+@media (max-width: 900px) {
+  .navbar-left { gap: 10px; }
+  .nav-button { padding: 6px 10px; font-size: 0.95rem; }
+}
 
 @media (max-width: 600px) {
   .app-navbar {
@@ -194,7 +208,7 @@ code {
   }
   .nav-button {
     padding: 6px 8px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -258,4 +272,149 @@ code {
 .submit-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+}
+
+/* Registrar Incapacidad styles */
+.registrar-container {
+  max-width: 820px;
+  margin: 28px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.registrar-container h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.4rem;
+  color: var(--color-primary);
+}
+
+.registrar-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+  align-items: start;
+}
+
+.registrar-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.registrar-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.registrar-input, .registrar-select, .registrar-textarea {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-extra-light);
+  box-sizing: border-box;
+}
+
+.registrar-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.registrar-file {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.registrar-file input[type="file"] {
+  display: inline-block;
+}
+
+.registrar-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.registrar-submit {
+  background: var(--color-primary);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.registrar-submit:disabled {
+  background: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.success-message {
+  color: #0b7a3b;
+  background: rgba(11,122,59,0.08);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(11,122,59,0.12);
+  margin-bottom: 10px;
+}
+
+.error-message-inline {
+  color: #a61b1b;
+  background: rgba(166,27,27,0.06);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(166,27,27,0.08);
+  margin-bottom: 10px;
+}
+
+@media (max-width: 780px) {
+  .registrar-form { grid-template-columns: 1fr; }
+  .registrar-actions { justify-content: stretch; flex-direction: column; }
+}
+
+/* Estado Incapacidades table styles */
+.estado-table-wrap {
+  overflow-x: auto;
+}
+
+.estado-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.estado-table th, .estado-table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #eef2f3;
+}
+
+.estado-table thead th {
+  background: rgba(0,0,0,0.03);
+  font-weight: 700;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.estado-badge--enviada { background: rgba(255,193,7,0.12); color: #b35f00; }
+.estado-badge--recibida { background: rgba(3,169,244,0.08); color: #015e7a; }
+.estado-badge--equivocada { background: rgba(229,57,53,0.08); color: #7a1d1b; }
+.estado-badge--radicando { background: rgba(124,77,255,0.08); color: #3a1a9b; }
+.estado-badge--aceptado { background: rgba(76,175,80,0.08); color: #15621b; }
+.estado-badge--finalizado { background: rgba(96,125,139,0.06); color: #263238; }
+.estado-badge--otro { background: rgba(0,0,0,0.06); color: #222; }
+
+@media (max-width: 480px) {
+  .estado-table th, .estado-table td { padding: 8px 6px; font-size: 0.9rem; }
 }

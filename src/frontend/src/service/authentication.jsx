@@ -23,6 +23,31 @@ export const login = async (correo, contrasena) => {
 };
 
 
+// Register: llama al endpoint de registro y devuelve { token, user }
+export const register = async (username, email, password, firstName, lastName) => {
+	try {
+		const response = await axios.post(ENDPOINTS.AUTH_REGISTER, {
+			username,
+			email,
+			password,
+			firstName,
+			lastName,
+		});
+
+		if (response.data && response.data.success && response.data.token) {
+			return {
+				token: response.data.token,
+				user: response.data.user,
+			};
+		} else {
+			throw new Error(response.data?.message || 'Error en el registro');
+		}
+	} catch (err) {
+		throw err;
+	}
+};
+
+
 // Manejo de token en localStorage y axios
 export const setAuthToken = (token) => {
 	if (token) {

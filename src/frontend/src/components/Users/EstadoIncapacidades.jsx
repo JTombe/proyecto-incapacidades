@@ -36,42 +36,48 @@ const EstadoIncapacidades = () => {
   }, [user]);
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="registrar-container">
       <h2>Mis Incapacidades</h2>
 
-      {!user && <p style={{ color: 'orange' }}>Inicia sesión para ver tus incapacidades.</p>}
+      {!user && <p className="error-message-inline">Inicia sesión para ver tus incapacidades.</p>}
 
-      {loading && <p>Cargando...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {loading && <p>Loading...</p>}
+      {error && <div className="error-message-inline">{error}</div>}
 
       {!loading && !error && (
         <div>
           {incapacidades.length === 0 && <p>No hay incapacidades registradas.</p>}
           {incapacidades.length > 0 && (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>ID</th>
-                  <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Tipo</th>
-                  <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Fecha inicio</th>
-                  <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Días</th>
-                  <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Diagnóstico</th>
-                  <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {incapacidades.map((inc) => (
-                  <tr key={inc.id}>
-                    <td style={{ padding: '6px 4px', borderBottom: '1px solid #f1f1f1' }}>{inc.id}</td>
-                    <td style={{ padding: '6px 4px', borderBottom: '1px solid #f1f1f1' }}>{inc.tipo}</td>
-                    <td style={{ padding: '6px 4px', borderBottom: '1px solid #f1f1f1' }}>{new Date(inc.fechaInicio).toLocaleDateString()}</td>
-                    <td style={{ padding: '6px 4px', borderBottom: '1px solid #f1f1f1' }}>{inc.dias}</td>
-                    <td style={{ padding: '6px 4px', borderBottom: '1px solid #f1f1f1' }}>{inc.diagnostico}</td>
-                    <td style={{ padding: '6px 4px', borderBottom: '1px solid #f1f1f1' }}>{ESTADO_MAP[inc.estado] ?? inc.estado}</td>
+            <div className="estado-table-wrap">
+              <table className="estado-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Fecha inicio</th>
+                    <th>Días</th>
+                    <th>Diagnóstico</th>
+                    <th>Estado</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {incapacidades.map((inc) => (
+                    <tr key={inc.id}>
+                      <td>{inc.id}</td>
+                      <td>{inc.tipo}</td>
+                      <td>{new Date(inc.fechaInicio).toLocaleDateString()}</td>
+                      <td>{inc.dias}</td>
+                      <td>{inc.diagnostico}</td>
+                      <td>
+                        <span className={`estado-badge estado-badge--${(ESTADO_MAP[inc.estado] || 'otro').toLowerCase().replace(/\s+/g,'-')}`}>
+                          {ESTADO_MAP[inc.estado] ?? inc.estado}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}

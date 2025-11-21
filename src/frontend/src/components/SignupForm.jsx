@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
+import { register, setAuthToken } from '../service/authentication';
 import '../index.css';
 
 const SignUpForm = () => {
   // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
-    nombreCompleto: '',
-    numeroId: '',
-    dependencia: '',
+    username: '',
+    firstName: '',
+    lastName: '',
     correo: '',
     contrasena: '',
-    confirmarContrasena: '', // Se añade para verificación
+    confirmarContrasena: '',
   });
 
   // Estado para manejar los errores de validación
@@ -34,10 +35,10 @@ const SignUpForm = () => {
     let tempErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    if (!formData.nombreCompleto) tempErrors.nombreCompleto = 'El nombre completo es obligatorio.';
-    if (!formData.numeroId) tempErrors.numeroId = 'El número de identificación es obligatorio.';
-    if (!formData.dependencia) tempErrors.dependencia = 'La dependencia es obligatoria.';
-    
+    if (!formData.username) tempErrors.username = 'El nombre de usuario es obligatorio.';
+    if (!formData.firstName) tempErrors.firstName = 'El nombre es obligatorio.';
+    if (!formData.lastName) tempErrors.lastName = 'El apellido es obligatorio.';
+
     if (!formData.correo || !emailRegex.test(formData.correo)) {
       tempErrors.correo = 'Ingrese un correo electrónico válido.';
     }
@@ -56,26 +57,33 @@ const SignUpForm = () => {
   };
 
   // 3. Manejador de envío: se ejecuta al hacer clic en el botón
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setIsSubmitting(true);
-      console.log('Datos de registro válidos:', {
-        nombreCompleto: formData.nombreCompleto,
-        numeroId: formData.numeroId,
-        dependencia: formData.dependencia,
-        correo: formData.correo,
-        // En una aplicación real, NUNCA envíes la contraseña en texto plano, 
-        // ¡debe ser hasheada en el backend!
-        contrasena: formData.contrasena, 
-      });
+      try {
+        const result = await register(
+          formData.username,
+          formData.correo,
+          formData.contrasena,
+          formData.firstName,
+          formData.lastName
+        );
 
-      // Aquí iría la llamada a la API (fetch/axios) para enviar los datos al servidor.
-      setTimeout(() => {
-        alert('Registro exitoso (simulado)!');
+        if (result && result.token) {
+          // Guardar token y establecer cabecera por defecto
+          setAuthToken(result.token);
+          alert('Registro exitoso');
+          // Opcional: redirigir o actualizar UI
+        } else {
+          alert('Registro completado, pero no se recibió token');
+        }
+      } catch (err) {
+        const message = err?.response?.data?.message || err.message || 'Error en el registro';
+        alert(message);
+      } finally {
         setIsSubmitting(false);
-        // Opcional: Redirigir al usuario
-      }, 1500);
+      }
 
     } else {
       console.log('Errores de validación:', errors);
@@ -86,47 +94,47 @@ const SignUpForm = () => {
     <div className="signup-container">
       <h2>Registro de Usuario</h2>
       <form onSubmit={handleSubmit} className="signup-form">
-        
-        {/* Campo: Nombre Completo */}
+
+        {/* Campo: Username */}
         <div className="form-group">
-          <label htmlFor="nombreCompleto">Nombre Completo:</label>
+          <label htmlFor="username">Nombre de usuario:</label>
           <input
             type="text"
-            id="nombreCompleto"
-            name="nombreCompleto"
-            value={formData.nombreCompleto}
+            id="username"
+            name="username"
+            value={formData.username}
             onChange={handleChange}
             className="form-input"
           />
-          {errors.nombreCompleto && <p className="error-message">{errors.nombreCompleto}</p>}
+          {errors.username && <p className="error-message">{errors.username}</p>}
         </div>
 
-        {/* Campo: Número de ID */}
+        {/* Campo: Nombre */}
         <div className="form-group">
-          <label htmlFor="numeroId">Número de Identificación:</label>
+          <label htmlFor="firstName">Nombre:</label>
           <input
             type="text"
-            id="numeroId"
-            name="numeroId"
-            value={formData.numeroId}
+            id="firstName"
+            name="firstName"
+            value={formData.firstName}
             onChange={handleChange}
             className="form-input"
           />
-          {errors.numeroId && <p className="error-message">{errors.numeroId}</p>}
+          {errors.firstName && <p className="error-message">{errors.firstName}</p>}
         </div>
 
-        {/* Campo: Dependencia */}
+        {/* Campo: Apellido */}
         <div className="form-group">
-          <label htmlFor="dependencia">Dependencia:</label>
+          <label htmlFor="lastName">Apellido:</label>
           <input
             type="text"
-            id="dependencia"
-            name="dependencia"
-            value={formData.dependencia}
+            id="lastName"
+            name="lastName"
+            value={formData.lastName}
             onChange={handleChange}
             className="form-input"
           />
-          {errors.dependencia && <p className="error-message">{errors.dependencia}</p>}
+          {errors.lastName && <p className="error-message">{errors.lastName}</p>}
         </div>
 
         {/* Campo: Correo Electrónico */}

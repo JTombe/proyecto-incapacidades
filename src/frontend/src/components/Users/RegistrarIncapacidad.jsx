@@ -58,18 +58,18 @@ const RegistrarIncapacidad = () => {
   };
 
   return (
-    <div style={{ padding: 20, maxWidth: 720 }}>
+    <div className="registrar-container">
       <h2>Registrar Incapacidad</h2>
 
-      {!user && <p style={{ color: 'orange' }}>No autenticado. Inicia sesión para registrar una incapacidad.</p>}
+      {!user && <p className="error-message-inline">No autenticado. Inicia sesión para registrar una incapacidad.</p>}
 
-      {message && <div style={{ color: 'green', marginBottom: 8 }}>{message}</div>}
-      {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
+      {message && <div className="success-message">{message}</div>}
+      {error && <div className="error-message-inline">{error}</div>}
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 8 }}>
+      <form className="registrar-form" onSubmit={handleSubmit}>
+        <div className="registrar-group">
           <label>Tipo (1-6): </label>
-          <select name="tipo" value={form.tipo} onChange={handleChange}>
+          <select name="tipo" value={form.tipo} onChange={handleChange} className="registrar-select">
             <option value={1}>Maternidad</option>
             <option value={2}>Paternidad</option>
             <option value={3}>Enfermedad general</option>
@@ -79,33 +79,44 @@ const RegistrarIncapacidad = () => {
           </select>
         </div>
 
-        <div style={{ marginBottom: 8 }}>
+        <div className="registrar-group">
           <label>Fecha inicio: </label>
-          <input type="date" name="fechaInicio" value={form.fechaInicio} onChange={handleChange} />
+          <input type="date" name="fechaInicio" value={form.fechaInicio} onChange={handleChange} className="registrar-input" />
         </div>
 
-        <div style={{ marginBottom: 8 }}>
+        <div className="registrar-group">
           <label>Días: </label>
-          <input type="number" min={1} max={365} name="dias" value={form.dias} onChange={handleChange} />
+          <input type="number" min={1} max={365} name="dias" value={form.dias} onChange={handleChange} className="registrar-input" />
         </div>
 
-        <div style={{ marginBottom: 8 }}>
+        <div className="registrar-group">
           <label>Diagnóstico: </label>
-          <input type="text" name="diagnostico" value={form.diagnostico} onChange={handleChange} required />
+          <input type="text" name="diagnostico" value={form.diagnostico} onChange={handleChange} required className="registrar-input" />
         </div>
 
-        <div style={{ marginBottom: 8 }}>
+        <div className="registrar-group">
           <label>EPS: </label>
-          <input type="text" name="EPS" value={form.EPS} onChange={handleChange} required />
+          <input type="text" name="EPS" value={form.EPS} onChange={handleChange} required className="registrar-input" />
         </div>
 
-        <div style={{ marginBottom: 8 }}>
+        <div className="registrar-group registrar-file">
           <label>Documentos: </label>
           <input type="file" multiple onChange={handleFiles} />
         </div>
 
-        <div>
-          <button type="submit" disabled={isSubmitting || !user}>
+        {form.documentos && form.documentos.length > 0 && (
+          <div className="registrar-group" style={{ gridColumn: '1 / -1' }}>
+            <label>Archivos seleccionados:</label>
+            <ul>
+              {form.documentos.map((f, i) => (
+                <li key={i}>{f.name} ({Math.round(f.size/1024)} KB)</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="registrar-actions">
+          <button type="submit" className="registrar-submit" disabled={isSubmitting || !user}>
             {isSubmitting ? 'Registrando...' : 'Registrar incapacidad'}
           </button>
         </div>
