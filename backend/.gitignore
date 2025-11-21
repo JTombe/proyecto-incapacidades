@@ -1,0 +1,9 @@
+.env
+appsettings.Development.json
+appsettings.json
+*.user
+*.suo
+*.userprefs
+*.vs/
+bin/
+obj/

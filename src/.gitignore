@@ -38,6 +38,9 @@ _ReSharper.*/
 *.ldf
 secrets.json # Archivo de secretos de usuario de ASP.NET Core
 
+# Carpeta de scripts y esquemas de base de datos
+database/
+
 ###########################
 # Python
 ###########################
