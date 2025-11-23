@@ -16,6 +16,7 @@ export const ROLES = {
   JEFE: 'jefe',
   RECEPCIONISTA: 'recepcionista',
   TRABAJADOR: 'trabajador',
+  
   USUARIO: 'usuario',
   GESTOR_HUMANA: 'gestor_humana',
 };
