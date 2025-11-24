@@ -6,6 +6,8 @@ import SignUpForm from "../components/SignupForm";
 import RegistrarIncapacidad from "../components/Users/RegistrarIncapacidad";
 import EstadoIncapacidades from "../components/Users/EstadoIncapacidades";
 import ConsultarIncapacidades from "../components/Users/ConsultarIncapacidades";
+import ModificarDatos from "../components/Users/ModificarDatos";
+import CambiarContrasena from "../components/Users/CambiarContrasena";
 import GestionIncapacidades from "../components/Users/GestionIncapacidades";
 import HorariosEmpleados from "../components/Users/HorariosEmpleados";
 import CrearEmpleado from "../components/Users/CrearEmpleado";
@@ -23,6 +25,8 @@ const AppRoutes = () => {
       {/* Rutas protegidas - ProtectedRoute se encarga de verificar el token */}
       <Route element={<ProtectedRoute />}>
         <Route path="/profile" element={<div>User Profile</div>} />
+        <Route path="/profile/edit" element={<ModificarDatos />} />
+        <Route path="/profile/change-password" element={<CambiarContrasena />} />
         <Route path="/logout" element={<Logout />} />
         {/* Empleado */}
         <Route path="/empleado/registrar" element={<RegistrarIncapacidad />} />

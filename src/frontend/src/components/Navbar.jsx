@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 const Navbar = () => {
   const { isAuthenticated, hasRole, logout, user } = useAuth();
   const navigate = useNavigate();
-  const [showMore, setShowMore] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -77,12 +77,31 @@ const Navbar = () => {
           </>
         )}
 
-        {/* Si está autenticado: mostrar botón de logout en su lugar */}
+        {/* Si está autenticado: mostrar menú de usuario con opciones */}
         {isAuthenticated && (
           <>
-            <button className="nav-button nav-button--danger" onClick={handleLogout}>
-              Logout
-            </button>
+            <div className="nav-user-dropdown">
+              <button
+                className="nav-button nav-user-button"
+                onClick={() => setShowUserMenu((s) => !s)}
+              >
+                {user?.firstName || user?.name || user?.email || 'Mi perfil'} ▾
+              </button>
+
+              {showUserMenu && (
+                <div className="nav-dropdown-menu" style={{ right: 0, left: 'auto' }}>
+                  <div className="nav-dropdown-item">
+                    <Link to="/profile/edit" className="nav-dropdown-link" onClick={() => setShowUserMenu(false)}>Editar perfil</Link>
+                  </div>
+                  <div className="nav-dropdown-item">
+                    <Link to="/profile/change-password" className="nav-dropdown-link" onClick={() => setShowUserMenu(false)}>Cambiar contraseña</Link>
+                  </div>
+                  <div className="nav-dropdown-item">
+                    <button className="nav-dropdown-link" onClick={() => { setShowUserMenu(false); handleLogout(); }}>Logout</button>
+                  </div>
+                </div>
+              )}
+            </div>
           </>
         )}
       </div>

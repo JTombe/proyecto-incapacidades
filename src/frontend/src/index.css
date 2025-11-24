@@ -452,3 +452,51 @@ code {
 @media (max-width: 480px) {
   .estado-table th, .estado-table td { padding: 8px 6px; font-size: 0.9rem; }
 }
+
+/* Modal styles for ConsultarIncapacidades */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+}
+
+.modal {
+  background: white;
+  padding: 18px;
+  border-radius: 8px;
+  max-width: 920px;
+  width: 100%;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+}
+
+.modal h3 { margin-top: 0; color: var(--color-primary); }
+
+.modal button { padding: 8px 10px; border-radius: 6px; border: none; cursor: pointer; }
+
+.modal .nav-button {
+  padding: 8px 10px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.modal .nav-button:hover { background: var(--color-secondary); }
+
+.modal .doc-list { list-style: none; padding: 0; margin: 6px 0; }
+.modal .doc-list li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed rgba(0,0,0,0.04); }
+
+.estado-table button, .registrar-actions button { padding: 6px 10px; border-radius: 6px; border: none; background: rgba(0,0,0,0.06); cursor: pointer; }
+.estado-table button:hover { background: rgba(0,0,0,0.09); }
+
+.file-input {
+  display: inline-block;
+}
+
+.error-message-inline, .success-message { word-break: break-word; }
+

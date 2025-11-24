@@ -123,10 +123,73 @@ export const actualizarEstado = async (id, estado) => {
 	}
 };
 
+// Obtener una incapacidad por id
+export const getIncapacidadById = async (id) => {
+	try {
+		const response = await axios.get(`${ENDPOINTS.INCAPACIDADES}/${id}`);
+		if (response.data && response.data.success) return response.data.data;
+		throw new Error(response.data?.message || 'Error al obtener incapacidad');
+	} catch (err) {
+		if (err.response && err.response.data) {
+			throw new Error(err.response.data?.message || JSON.stringify(err.response.data));
+		}
+		throw err;
+	}
+};
+
+// Agregar documentos a una incapacidad (form-data)
+export const agregarDocumentos = async (id, files) => {
+	try {
+		const form = new FormData();
+		files.forEach((f) => form.append('archivos', f));
+		// el backend espera key 'archivos' en FromForm
+		await axios.post(`${ENDPOINTS.INCAPACIDADES}/${id}/documentos`, form, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+		});
+		return true;
+	} catch (err) {
+		if (err.response && err.response.data) {
+			throw new Error(err.response.data?.message || JSON.stringify(err.response.data));
+		}
+		throw err;
+	}
+};
+
+// Descargar un archivo respetando cabeceras (token). Abre en nueva pestaña.
+export const descargarArchivo = async (url, nombre) => {
+	try {
+		const response = await axios.get(url, { responseType: 'blob' });
+		const blob = new Blob([response.data]);
+		const blobUrl = window.URL.createObjectURL(blob);
+		// abrir en nueva ventana
+		const newWindow = window.open(blobUrl);
+		if (!newWindow) {
+			// fallback: crear enlace y simular click para descarga
+			const a = document.createElement('a');
+			a.href = blobUrl;
+			a.download = nombre || '';
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+		}
+		// Liberar recurso después de un tiempo
+		setTimeout(() => window.URL.revokeObjectURL(blobUrl), 10000);
+		return true;
+	} catch (err) {
+		if (err.response && err.response.data) {
+			throw new Error(err.response.data?.message || JSON.stringify(err.response.data));
+		}
+		throw err;
+	}
+};
+
 export default {
 	registrarIncapacidad,
 	getUserById,
 	getIncapacidadesByEmpleado,
   getAllIncapacidades,
   actualizarEstado,
+	getIncapacidadById,
+	agregarDocumentos,
+	descargarArchivo,
 };
