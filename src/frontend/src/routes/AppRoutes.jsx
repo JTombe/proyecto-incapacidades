@@ -7,6 +7,7 @@ import RegistrarIncapacidad from "../components/Users/RegistrarIncapacidad";
 import EstadoIncapacidades from "../components/Users/EstadoIncapacidades";
 import ConsultarIncapacidades from "../components/Users/ConsultarIncapacidades";
 import HorariosEmpleados from "../components/Users/HorariosEmpleados";
+import CrearEmpleado from "../components/Users/CrearEmpleado";
 
 const AppRoutes = () => {
   return (
@@ -23,14 +24,16 @@ const AppRoutes = () => {
         <Route path="/profile" element={<div>User Profile</div>} />
         <Route path="/logout" element={<Logout />} />
         {/* Empleado */}
-        <Route path="/empleado/registrar" element={<RegistrarIncapacidad />} />
-        <Route path="/empleado/estado" element={<EstadoIncapacidades />} />
+        <Route path="/usuario/registrar" element={<RegistrarIncapacidad />} />
+        <Route path="/usuario/estado" element={<EstadoIncapacidades />} />
 
         {/* Recepcionista */}
         <Route path="/recepcionista/consultar" element={<ConsultarIncapacidades />} />
 
         {/* Jefe de área */}
         <Route path="/jefe/horarios" element={<HorariosEmpleados />} />
+        {/* Gestión de empleados (admin / gestor_humana) */}
+        <Route path="/empleados/crear" element={<CrearEmpleado />} />
       </Route>
     </RouterRoutes>
   );

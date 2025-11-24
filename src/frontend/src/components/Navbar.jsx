@@ -19,6 +19,13 @@ const Navbar = () => {
 
         {/* Colocar los botones de navegación justo a la derecha del logo */}
         <div className="navbar-links">
+          {/* Enlaces para administración/gestión humana */}
+          {isAuthenticated && (hasRole('admin') || hasRole('gestor_humana')) && (
+            <>
+              <Link to="/empleados/crear" className="nav-button">Crear Empleado</Link>
+            </>
+          )}
+
           {/* Enlaces para empleados */}
           {isAuthenticated && (hasRole('trabajador') || hasRole('empleado')) && (
             <>
