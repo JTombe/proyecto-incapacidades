@@ -1,6 +1,0 @@
-@Incapacidades.API_HostAddress = http://localhost:5192
-
-GET {{Incapacidades.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

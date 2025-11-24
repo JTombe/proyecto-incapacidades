@@ -64,7 +64,6 @@ La API utiliza respuestas estandarizadas con `ApiResponse<T>` y requiere autenti
 ### 🔐 Autenticación
 
 #### Login
-
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -76,7 +75,6 @@ Content-Type: application/json
 ```
 
 **Respuesta exitosa:**
-
 ```json
 {
   "success": true,
@@ -94,7 +92,6 @@ Content-Type: application/json
 ```
 
 #### Registro (solo administradores)
-
 ```http
 POST /api/auth/register
 Authorization: Bearer {token}
@@ -112,14 +109,12 @@ Content-Type: application/json
 ### 👥 Gestión de Usuarios
 
 #### Listar usuarios
-
 ```http
 GET /api/users
 Authorization: Bearer {token}
 ```
 
 **Respuesta:**
-
 ```json
 [
   {
@@ -137,14 +132,12 @@ Authorization: Bearer {token}
 ```
 
 #### Obtener usuario por ID
-
 ```http
 GET /api/users/{id}
 Authorization: Bearer {token}
 ```
 
 #### Crear usuario
-
 ```http
 POST /api/users
 Authorization: Bearer {token}
@@ -161,7 +154,6 @@ Content-Type: application/json
 ```
 
 #### Actualizar usuario
-
 ```http
 PUT /api/users/{id}
 Authorization: Bearer {token}
@@ -177,7 +169,6 @@ Content-Type: application/json
 ```
 
 #### Cambiar contraseña
-
 ```http
 POST /api/users/{id}/change-password
 Authorization: Bearer {token}
@@ -190,7 +181,6 @@ Content-Type: application/json
 ```
 
 #### Eliminar usuario
-
 ```http
 DELETE /api/users/{id}
 Authorization: Bearer {token}
@@ -199,18 +189,15 @@ Authorization: Bearer {token}
 ### 👷 Gestión de Empleados
 
 #### Listar empleados
-
 ```http
 GET /api/empleados?activo=true
 Authorization: Bearer {token}
 ```
 
 **Parámetros de consulta:**
-
 - `activo` (boolean, opcional): Filtrar por estado activo
 
 **Respuesta:**
-
 ```json
 [
   {
@@ -230,21 +217,18 @@ Authorization: Bearer {token}
 ```
 
 #### Obtener empleado por ID
-
 ```http
 GET /api/empleados/{id}
 Authorization: Bearer {token}
 ```
 
 #### Obtener empleado por identificación
-
 ```http
 GET /api/empleados/identificacion/{numeroIdentificacion}
 Authorization: Bearer {token}
 ```
 
 #### Crear empleado
-
 ```http
 POST /api/empleados
 Authorization: Bearer {token}
@@ -261,7 +245,6 @@ Content-Type: application/json
 ```
 
 #### Actualizar empleado
-
 ```http
 PUT /api/empleados/{id}
 Authorization: Bearer {token}
@@ -278,14 +261,12 @@ Content-Type: application/json
 ```
 
 #### Desactivar empleado
-
 ```http
 PUT /api/empleados/{id}/desactivar
 Authorization: Bearer {token}
 ```
 
 #### Eliminar empleado
-
 ```http
 DELETE /api/empleados/{id}
 Authorization: Bearer {token}
@@ -294,27 +275,23 @@ Authorization: Bearer {token}
 ### 🏥 Gestión de Incapacidades
 
 #### Listar todas las incapacidades
-
 ```http
 GET /api/incapacidades?estado=Registrada&desde=2024-01-01&hasta=2024-12-31
 Authorization: Bearer {token}
 ```
 
 **Parámetros de consulta:**
-
 - `estado` (EstadoIncapacidad, opcional): Filtrar por estado
 - `desde` (DateTime, opcional): Fecha inicio del rango
 - `hasta` (DateTime, opcional): Fecha fin del rango
 
 #### Obtener incapacidad por ID
-
 ```http
 GET /api/incapacidades/{id}
 Authorization: Bearer {token}
 ```
 
 **Respuesta:**
-
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -339,19 +316,16 @@ Authorization: Bearer {token}
 ```
 
 #### Listar incapacidades por empleado
-
 ```http
 GET /api/incapacidades/empleado/{empleadoId}?desde=2024-01-01&hasta=2024-12-31
 Authorization: Bearer {token}
 ```
 
 **Parámetros de consulta:**
-
 - `desde` (DateTime, opcional): Fecha inicio del rango
 - `hasta` (DateTime, opcional): Fecha fin del rango
 
 #### Registrar incapacidad
-
 ```http
 POST /api/incapacidades/registrar
 Authorization: Bearer {token}
@@ -369,7 +343,6 @@ eps: Sura
 ```
 
 #### Actualizar estado de incapacidad
-
 ```http
 PUT /api/incapacidades/{id}/estado
 Authorization: Bearer {token}
@@ -382,7 +355,6 @@ Content-Type: application/json
 ```
 
 #### Actualizar incapacidad completa
-
 ```http
 PUT /api/incapacidades/{id}
 Authorization: Bearer {token}
@@ -399,7 +371,6 @@ Content-Type: application/json
 ```
 
 #### Agregar documentos a incapacidad
-
 ```http
 POST /api/incapacidades/{id}/documentos
 Authorization: Bearer {token}
@@ -411,7 +382,6 @@ Content-Type: multipart/form-data
 ### 📋 Estructuras de Datos Comunes
 
 #### Estados de Incapacidad
-
 - `Registrada`: Inicialmente registrada
 - `EnRevision`: En proceso de revisión
 - `Transcrita`: Enviada a EPS
@@ -421,7 +391,6 @@ Content-Type: multipart/form-data
 - `Cancelada`: Cancelada
 
 #### Tipos de Incapacidad
-
 - `EnfermedadGeneral`
 - `AccidenteLaboral`
 - `LicenciaMaternidad`
@@ -429,14 +398,12 @@ Content-Type: multipart/form-data
 - `EnfermedadProfesional`
 
 #### Políticas de Autorización
-
 - `GestionHumana`: Acceso a gestión de empleados e incapacidades
 - `Empleado`: Acceso básico de consulta
 
 ### ⚠️ Manejo de Errores
 
 Todas las respuestas de error siguen el formato:
-
 ```json
 {
   "success": false,
@@ -446,7 +413,6 @@ Todas las respuestas de error siguen el formato:
 ```
 
 **Códigos HTTP comunes:**
-
 - `200`: Éxito
 - `201`: Creado
 - `204`: Sin contenido (operaciones exitosas sin respuesta)
@@ -495,21 +461,21 @@ Para consumir la API desde el frontend:
 
 Se ha añadido soporte para levantar la API y una instancia de MariaDB mediante `docker compose` dentro de la carpeta `backend/`.
 
-  1. Copia el ejemplo de variables de entorno y ajústalas:
+1. Copia el ejemplo de variables de entorno y ajústalas:
 
-  ```pwsh
-  cp .env.example .env
-  # editar .env con tu editor preferido
-  ```
+```pwsh
+cp .env.example .env
+# editar .env con tu editor preferido
+```
 
-  2. Levanta los servicios:
+2. Levanta los servicios:
 
-  ```pwsh
-  cd backend
-  docker compose up --build
-  ```
+```pwsh
+cd backend
+docker compose up --build
+```
 
-  3. Accede al Swagger en `http://localhost:5192/swagger/index.html` (o el puerto que hayas definido en `API_PORT_HOST` en el `.env`).
+3. Accede al Swagger en `http://localhost:5192/swagger/index.html` (o el puerto que hayas definido en `API_PORT_HOST` en el `.env`).
 
 Notas:
 

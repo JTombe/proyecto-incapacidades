@@ -140,7 +140,8 @@ public class Program
 
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("GestionHumana", policy => policy.RequireRole("admin", "gestor_humana"));
+            // Permitir también a usuarios con rol 'empleado' usar la política GestionHumana
+            options.AddPolicy("GestionHumana", policy => policy.RequireRole("admin", "gestor_humana"/*, "empleado"*/));
             options.AddPolicy("Empleado", policy => policy.RequireRole("empleado"));
         });
 
