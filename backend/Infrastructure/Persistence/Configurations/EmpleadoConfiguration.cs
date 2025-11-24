@@ -14,7 +14,7 @@ public class EmpleadoConfiguration : IEntityTypeConfiguration<Empleado>
 
         builder.Property(e => e.Id)
             .HasColumnName("id")
-            .ValueGeneratedNever();
+            .ValueGeneratedOnAdd();
 
         builder.Property(e => e.NombreCompleto)
             .HasColumnName("nombre_completo")
