@@ -5,6 +5,7 @@ import { registrarIncapacidad } from '../../service/Incapacidades';
 const RegistrarIncapacidad = () => {
   const { user } = useAuth();
   const [form, setForm] = useState({
+    empleadoId: '',
     tipo: 1,
     fechaInicio: new Date().toISOString().slice(0, 10),
     dias: 1,
@@ -35,9 +36,13 @@ const RegistrarIncapacidad = () => {
     try {
       if (!user || !user.id) throw new Error('Usuario no autenticado');
 
+      if (!form.empleadoId) {
+        throw new Error('El ID del empleado es obligatorio');
+      }
+
       const payload = {
-        empleadoId: Number(user.id),
-        empleadoNombre: user.name || undefined,
+        empleadoId: Number(form.empleadoId),
+        empleadoNombre: form.empleadoNombre || user.name || undefined,
         tipo: Number(form.tipo),
         fechaInicio: form.fechaInicio,
         dias: form.dias ? Number(form.dias) : undefined,
@@ -68,7 +73,7 @@ const RegistrarIncapacidad = () => {
 
       <form className="registrar-form" onSubmit={handleSubmit}>
         <div className="registrar-group">
-          <label>Tipo (1-6): </label>
+            <label>Tipo (1-6): </label>
           <select name="tipo" value={form.tipo} onChange={handleChange} className="registrar-select">
             <option value={1}>Maternidad</option>
             <option value={2}>Paternidad</option>
@@ -78,6 +83,16 @@ const RegistrarIncapacidad = () => {
             <option value={6}>Otro</option>
           </select>
         </div>
+
+          <div className="registrar-group">
+            <label>ID del empleado (requerido): </label>
+            <input type="number" name="empleadoId" value={form.empleadoId} onChange={handleChange} className="registrar-input" required />
+          </div>
+
+          <div className="registrar-group">
+            <label>Nombre del empleado (opcional): </label>
+            <input type="text" name="empleadoNombre" value={form.empleadoNombre || ''} onChange={handleChange} className="registrar-input" />
+          </div>
 
         <div className="registrar-group">
           <label>Fecha inicio: </label>

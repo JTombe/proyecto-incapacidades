@@ -88,7 +88,45 @@ export const getIncapacidadesByEmpleado = async (empleadoId, desde, hasta) => {
 	}
 };
 
+// Obtener todas las incapacidades (opcional: filtrar por estado, desde, hasta)
+export const getAllIncapacidades = async (estado, desde, hasta) => {
+	try {
+		const params = {};
+		if (estado !== undefined && estado !== null) params.estado = estado;
+		if (desde) params.desde = new Date(desde).toISOString();
+		if (hasta) params.hasta = new Date(hasta).toISOString();
+
+		const query = new URLSearchParams(params).toString();
+		const url = `${ENDPOINTS.INCAPACIDADES}` + (query ? `?${query}` : '');
+
+		const response = await axios.get(url);
+		if (response.data && response.data.success) return response.data.data;
+		throw new Error(response.data?.message || 'Error al obtener incapacidades');
+	} catch (err) {
+		if (err.response && err.response.data) {
+			throw new Error(err.response.data?.message || JSON.stringify(err.response.data));
+		}
+		throw err;
+	}
+};
+
+// Actualizar estado de una incapacidad (body: { estado: <number> })
+export const actualizarEstado = async (id, estado) => {
+	try {
+		await axios.put(`${ENDPOINTS.INCAPACIDADES}/${id}/estado`, { estado });
+		return true;
+	} catch (err) {
+		if (err.response && err.response.data) {
+			throw new Error(err.response.data?.message || JSON.stringify(err.response.data));
+		}
+		throw err;
+	}
+};
+
 export default {
 	registrarIncapacidad,
 	getUserById,
+	getIncapacidadesByEmpleado,
+  getAllIncapacidades,
+  actualizarEstado,
 };

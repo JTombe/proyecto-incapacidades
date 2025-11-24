@@ -196,6 +196,40 @@ code {
   border: 1px solid rgba(255,0,0,0.2);
 }
 
+/* Dropdown for collapsed navbar items */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  z-index: 60;
+  min-width: 200px;
+  border-radius: 6px;
+  padding: 6px 0;
+}
+
+.nav-dropdown-item {
+  padding: 6px 12px;
+}
+
+.nav-dropdown-link {
+  display: block;
+  text-decoration: none;
+  color: var(--color-primary);
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+
+.nav-dropdown-link:hover {
+  background: rgba(140,3,131,0.06);
+}
+
 @media (max-width: 900px) {
   .navbar-left { gap: 10px; }
   .nav-button { padding: 6px 10px; font-size: 0.95rem; }
