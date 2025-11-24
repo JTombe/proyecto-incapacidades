@@ -141,6 +141,7 @@ const GestionIncapacidades = () => {
                   <tr>
                     <th>ID</th>
                     <th>Empleado</th>
+                    <th>EPS</th>
                     <th>Tipo</th>
                     <th>Fecha inicio</th>
                     <th>Días</th>
@@ -154,6 +155,7 @@ const GestionIncapacidades = () => {
                     <tr key={inc.id}>
                       <td>{inc.id}</td>
                       <td>{inc.empleadoNombre ?? inc.empleadoId}</td>
+                      <td>{inc.EPS ?? inc.eps ?? inc.epsNombre ?? inc.nombreEPS ?? ''}</td>
                       <td>{inc.tipo}</td>
                       <td>{inc.fechaInicio ? new Date(inc.fechaInicio).toLocaleDateString() : ''}</td>
                       <td>{inc.dias}</td>
@@ -205,6 +207,7 @@ const GestionIncapacidades = () => {
             {detailLoading && <p>Cargando...</p>}
             <div style={{ maxHeight: '60vh', overflow: 'auto' }}>
               <p><strong>Empleado:</strong> {selected.empleadoNombre} (ID: {selected.empleadoId})</p>
+              <p><strong>EPS:</strong> {selected.EPS ?? selected.eps ?? selected.epsNombre ?? selected.nombreEPS ?? ''}</p>
               <p><strong>Diagnóstico:</strong> {selected.diagnostico}</p>
               <div>
                 <strong>Documentos:</strong>
