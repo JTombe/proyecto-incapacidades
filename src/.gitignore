@@ -2,6 +2,7 @@
 # General - Sistema Operativo y Varios
 ###########################
 *~
+*.sln
 *.log
 *.bak
 *.swp
