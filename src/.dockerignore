@@ -7,7 +7,7 @@
 .vscode/    # Ignora configuraciones locales del IDE
 .idea/      # Ignora configuraciones de JetBrains
 .DS_Store
-
+.sln
 ###########################
 # C# / .NET (ASP.NET Core)
 ###########################
